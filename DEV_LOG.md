@@ -415,6 +415,51 @@ I tried putting the above code into a collapsible section, but then that block r
 
 Next session, I will separate them into files and start building out the app for real.
 
+## + + + + DAY 3 NOTES + + + +
+
+Forgot to commit my work yesterday. Whoops.
+
+Today I'm listening to some albums by Mega Drive: "Mega Drive", "198XAD", and "Encoder".
+
+### + + + Today's Tasks + + +
+
+1. Split the classes into distinct 'production' documents and require them into the main `tic-tac-toe.rb` document. Not sure yet what that should look like.
+2. Build the process flow (loops, etc.) outlined in DAY 1 of this doc as a means of also developing the remaining behaviours (methods) of each class.
+
+### Task 1: Separate classes into class documents
+
+Not sure what this should look like yet. Should the `tic-tac-toe.rb` doc just run the procedural code I have at the bottom? Literally run the game and that's it? I'm ok with that. Just not sure if that's standard or if the RunGame class should just become the `tic-tac-toe.rb` program.
+
+I think I'll do the former because it seems easier? Am I thinking of this the wrong way?
+
+First I want to rethink the GameBoard class. I think it should be renamed to reflect its refined purpose, which is to orchestrate the game logic and track state. GameState??? GameManager? GameCoordinator? GameModerator? GameMaster? GameWizard.
+
+Reference from [Project Management](https://www.theodinproject.com/lessons/ruby-project-management) lesson:
+
+```
+├── lib
+│   ├── sort
+│   │   ├── bogo_sort.rb
+│   │   ├── bubble_sort.rb
+│   │   └── merge_sort.rb
+│   └── sort.rb
+└── main.rb
+```
+
+So mine would be:
+
+```
+├── lib
+│   ├── game_moderator.rb
+│   ├── board_tiles.rb
+│   ├── game_host.rb
+│   └── run_game.rb
+│
+└── tic_tac_toe.rb
+```
+
+I removed the load file because I don't think I really need a file as a shorthand for the four files I need to require. I assume standard practice is not to over-engineer the file structure for such small games.
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information

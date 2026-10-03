@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# GameBoard knows the players, player tokens, turn state, win/stalemate logic
+# GameModerator knows the players, player tokens, turn state, win/stalemate logic
 # and validates user responses
-class Game
+class GameModerator
   attr_reader :player1_token, :player2_token, :current_player
   
   def initialize
@@ -28,13 +28,13 @@ class Game
     p 'this is not developed yet'
   end
 
-  # forbid more than one GameBoard object from existing in a single game
-  def limit_one_GameBoard_object
+  # forbid more than one GameModerator object from existing in a single game
+  def limit_one_GameModerator_object
     p 'this is not developed yet'
   end
 end
 
-# BoardTiles knows the tiles and updates them with the GameBoard player tokens based on player choices
+# BoardTiles knows the tiles and updates them with the GameModerator player tokens based on player choices
 class BoardTiles
   attr_reader :empty_tile, :tile_grid, :tile_options
 
@@ -91,8 +91,8 @@ class BoardTiles
   # on tile selection, updates the game board tiles 
   # with current player's player token
   # CHECK: untested way to access array index, current player not made yet
-  def update_tile(host, game_board)
-    @tiles_grid[host.player_choice] = game_board.current_player_token
+  def update_tile(host, game_moderator)
+    @tiles_grid[host.player_choice] = game_moderator.current_player_token
   end
 
   # GameHost object will send the user's tile choice here, but is it valid?
@@ -107,7 +107,6 @@ class BoardTiles
   def update_tile_options(host)
     tile_options.splice!(host.player_choice, 1)
   end
-
 
 end
 
@@ -128,9 +127,9 @@ class GameHost
     "
   end
 
-  def present_available_tiles(board_tiles, game_board)
+  def present_available_tiles(board_tiles, game_moderator)
     puts "
-    - - #{game_board.current_player} turn - - \n
+    - - #{game_moderator.current_player} turn - - \n
     Which tile will you place your player token on?: \n
       #{board_tiles.tile_options[0]}  #{board_tiles.tile_options[1]}  #{board_tiles.tile_options[2]} \n
       #{board_tiles.tile_options[3]}  #{board_tiles.tile_options[4]}  #{board_tiles.tile_options[5]} \n
@@ -155,10 +154,10 @@ class GameHost
 end
 
 class RunGame
-  attr_reader :game_board, :board_tiles, :game_host
+  attr_reader :game_moderator, :board_tiles, :game_host
 
   def initialize
-    @game_board = Game.new
+    @game_moderator = GameModerator.new
     @board_tiles = BoardTiles.new
     @game_host = GameHost.new  
   end
@@ -166,7 +165,7 @@ class RunGame
   # todo: create PROMPT PLAYER loop from DEV_LOG.md
   def play_game
     @game_host.display_board_tiles(@board_tiles)
-    @game_host.present_available_tiles(@board_tiles, @game_board)
+    @game_host.present_available_tiles(@board_tiles, @game_moderator)
   end
 
 end
