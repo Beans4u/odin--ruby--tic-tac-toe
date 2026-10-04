@@ -29,6 +29,11 @@ class GameModerator
     p 'this is not developed yet'
   end
 
+  def place_player_token
+    player_token = @board_tiles.validate_tile_chosen(@game_host)
+    @board_tiles.update_tile(player_token)
+  end
+
   # forbid more than one GameModerator object from existing in a single game
   def limit_one_game_moderator_object
     p 'this is not developed yet'

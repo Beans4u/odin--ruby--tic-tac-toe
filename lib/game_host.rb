@@ -27,11 +27,6 @@ class GameHost
     "
   end
 
-  def collect_player_choice
-    @player_choice = gets.chomp
-    @player_choice
-  end
-
   def display_tile_validation_error
     puts "#{current_player}, you entered #{@player_choice}, which is invalid. \n
     Please review the tile options and enter the tile exactly as presented."

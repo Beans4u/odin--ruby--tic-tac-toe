@@ -2,7 +2,7 @@
 
 # BoardTiles knows the tiles and updates them with the GameModerator player tokens based on player choices
 class BoardTiles
-  attr_reader :empty_tile, :tile_grid, :tile_options
+  attr_reader :empty_tile, :tile_grid, :tile_options, :player_choice
 
   def initialize
     @empty_tile = ' '
@@ -54,20 +54,30 @@ class BoardTiles
     ]
   end
 
+  def collect_player_choice
+    @player_choice = gets.chomp
+    @player_choice
+  end
+
+  # GameModerator object will send the user's tile choice here, but is it valid?
+  def validate_tile_chosen
+    # CHECK: will this spread allow any value from the array?
+    # below is a true/false bool that RuboCop asked me to change,
+    # TODO: use true/false val as message in method that will require
+    # it when I build it out later.
+    @player_choice == @tile_options[0..8]
+  end
+
+  def handle_error(host, run)
+    @game_host.display_tile_validation_error
+    @run_game.play_turn
+  end
+
   # on tile selection, updates the game board tiles
   # with current player's player token
   # CHECK: untested way to access array index, current player not made yet
   def update_tile(host, game_moderator)
     @tiles_grid[host.player_choice] = game_moderator.current_player_token
-  end
-
-  # GameHost object will send the user's tile choice here, but is it valid?
-  def validate_tile_chosen(host)
-    # CHECK: will this spread allow any value from the array?
-    # below is a true/false bool that RuboCop asked me to change,
-    # TODO: use true/false val as message in method that will require
-    # it when I build it out later.
-    host.player_choice == @tile_options[0..8]
   end
 
   # After @tile_grid tile is updated with player's token
