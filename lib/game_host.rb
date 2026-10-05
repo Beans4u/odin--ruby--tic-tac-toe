@@ -5,7 +5,7 @@ class GameHost
   attr_reader :player_choice
 
   def initialize
-    @player_choice = ''
+    @player_choice = nil
   end
 
   def display_board_tiles(board_tiles)
@@ -27,8 +27,14 @@ class GameHost
     "
   end
 
-  def display_tile_validation_error
-    puts "#{current_player}, you entered #{@player_choice}, which is invalid. \n
+  def collect_player_choice
+    @player_choice = gets.chomp
+    p "|| host >> game_host.collect_player_choice || #{@player_choice}" # TODO: for testing, remove later
+    @player_choice
+  end
+
+  def display_tile_validation_error(game_moderator)
+    puts "#{game_moderator.current_player}, you entered #{@player_choice}, which is invalid. \n
     Please review the tile options and enter the tile exactly as presented."
   end
 

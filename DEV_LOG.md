@@ -564,7 +564,160 @@ I would rather study existing code bases than learn everything the hard way. If 
 
 Anyway, I can complain or I can learn. Never trust your thoughts after 9:00, right? Alright, I'm going to start winding down my day and think more about all this when I return tomorrow.
 
+## + + + + DAY 4 NOTES + + + +
+
+Whoooooof. Sunday. 1pm, just sitting down. Still feeling heavy, groggy. Love a lazy Sunday, though. Today feels like a Habitants day. Listening to their only two albums, "One Self" and "Alma".
+
+So last night I left things off on a negative note, feeling I have lost control of my classes. Today I'll review my work. I think what probably happened was I got ahead of myself and started defining methods before I needed them, and even minor refactors wound up confusing me later, managing what is essentially junk data at present.
+
+Sometimes I get an idea of how I think it will go and I just plug in a placeholder "something like this" method off the dome and I don't even end up using it by the time I get there. So lesson learned: Everything in its time, Rin!!
+
+### Task 2, continued: Build game process flow and remaining class behaviours
+
+I'm going to continue building out the methods via building the game flow in the RunGame class.
+
+So far I've been trying to get it to work. Spent a whole album just tweaking code to see what will resolve the error messages that come up. It's nice to see an error message turn into a new error message, but at this point, I've spent an entire album doing this and I'm still at that place where I feel confused and overwhelmed by the class things and I'm convinced I'm doing classes wrong.
+
+```ruby
+class RunGame
+  attr_reader :game_moderator, :board_tiles, :game_host
+
+  def initialize
+    @game_moderator = GameModerator.new
+    @board_tiles = BoardTiles.new
+    @game_host = GameHost.new
+  end
+
+  def play_turn
+    @game_host.display_board_tiles(@board_tiles)
+    @game_host.present_available_tiles(@board_tiles, @game_moderator)
+    @game_host.collect_player_choice
+    p "|| run >> board tiles.player_choice || #{@game_host.player_choice}" # TODO: remove after testing
+    @board_tiles.handle_error(@game_host, @run_game, @board_tiles, @game_moderator) if @board_tiles.validate_tile_chosen(@game_host) == false
+  end
+end
+
+class GameModerator
+  attr_reader :player1_token, :player2_token, :current_player
+
+  def initialize
+    @player1_token = 'x'
+    @player2_token = 'o'
+    @PLAYER1 = 'Player 1'
+    @PLAYER2 = 'Player 2'
+    @current_player = @PLAYER1 # default for new games
+  end
+# ...
+end
+
+class BoardTiles
+  attr_reader :empty_tile, :tile_grid, :tile_options
+
+  # ...
+
+    def validate_tile_chosen(host)
+    # CHECK: will this spread allow any value from the array?
+    # below is a true/false bool that RuboCop asked me to change,
+    # TODO: use true/false val as message in method that will require
+    # it when I build it out later.
+    p "|| board >> validate_tile_chosen(host).host.player_choice == @tile_options[0..8] || #{host.player_choice == @tile_options[0..8]}" # TODO: delete after testing
+    host.player_choice == @tile_options[0..8]
+  end
+
+  def handle_error(host, run, board, moderator)
+    host.display_tile_validation_error(moderator, board)
+    run.play_turn
+  end
+
+  # ...
+end
+
+class GameHost
+  attr_reader :player_choice
+
+  def initialize
+    @player_choice = nil
+  end
+
+  # ...
+
+  def collect_player_choice
+    @player_choice = gets.chomp
+    p "|| host >> game_host.collect_player_choice || #{@player_choice}" # TODO: for testing, remove later
+    @player_choice
+  end
+
+  def display_tile_validation_error(game_moderator, board_tiles)
+    puts "#{game_moderator.current_player}, you entered #{board_tiles.player_choice}, which is invalid. \n
+    Please review the tile options and enter the tile exactly as presented."
+  end
+
+  # ...
+end
+
+# TIC TAC TOR doc
+# ... the require_relative class docs
+
+run_game = RunGame.new
+run_game.play_turn
+```
+
+output:
+
+```
+
+      Game Board:
+
+
+
+
+
+
+
+
+    - - Player 1 turn - -
+
+    Which tile will you place your player token on?:
+
+      tile1  tile2  tile3
+
+      tile4  tile5  tile6
+
+      tile7  tile8  tile9
+
+
+tile1
+"|| host >> game_host.collect_player_choice || tile1"
+"|| run >> board tiles.player_choice || tile1"
+"|| board >> validate_tile_chosen(host).host.player_choice == @tile_options[0..8] || false"
+
+(...)odin--ruby--tic-tac-toe/lib/game_host.rb:37:in 'GameHost#display_tile_validation_error': undefined method 'player_choice' for an instance of BoardTiles (NoMethodError)
+
+    puts "#{game_moderator.current_player}, you entered #{board_tiles.player_choice}, which is invalid. \n
+
+        from (...)/odin--ruby--tic-tac-toe/lib/board_tiles.rb:68:in 'BoardTiles#handle_error'
+        from (...)/odin--ruby--tic-tac-toe/lib/run_game.rb:18:in 'RunGame#play_turn'
+        from tic_tac_toe.rb:11:in '<main>'
+```
+
+And basically I'm so fatigued from using classes as arguments and trying to remember where methods live, I feel like this is some kind of dependency hell or something. Surely I'm handling this all wrong.
+
+At some point, I needed all four classes as method parameters to handle the validation error (and it's still not working). I am feeling dizzy from it all.
+
+Surely this is not how this is supposed to go down. Surely I'm misunderstanding something. The tutorials don't really talk about using methods as arguments, do they? iirc they didn't have anything this complex going on, which makes me think I'm doing it wrong.
+
+What is the architecture or syntax or methodology I should be using? And how do I find out?
+
+So basically, aside from some errors resolved, I'm still at the same place I was last night. I've got to do something differently. I think?
+
+I still have a few songs left on the last album, but I'm being kicked out of the office xD. I'm going to close this down and tomorrow I'll remove all the noise from the code base I built up. I should have done a sort of TDD approach, building up one method at a time and ensuring it works before adding others, and certainly not building anything hypothetical that I might not need, or need in that form.
+
+## + + + + DAY 5 NOTES + + + +
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
 - How to share information between objects of different classes
+- This project has been so weird for git push corrections that I now have `git commit --amend --no-edit` and `git push --force-with-lease` memorized. I guess you really do fail forward xD
+- Getting ahead of myself building methods I don't need yet.
+-

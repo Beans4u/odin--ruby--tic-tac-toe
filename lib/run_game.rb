@@ -13,7 +13,8 @@ class RunGame
   def play_turn
     @game_host.display_board_tiles(@board_tiles)
     @game_host.present_available_tiles(@board_tiles, @game_moderator)
-    @board_tiles.collect_player_choice
-    @board_tiles.handle_error(@game_host, @run_game) if @board_tiles.validate_tile_chosen == false
+    @game_host.collect_player_choice
+    p "|| run >> board tiles.player_choice || #{@game_host.player_choice}" # TODO: remove after testing
+    @board_tiles.handle_error(@game_host, @run_game, @game_moderator) if @board_tiles.validate_tile_chosen(@game_host) == false
   end
 end
