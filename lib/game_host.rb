@@ -28,7 +28,10 @@ class GameHost
   end
 
   def ask_player_to_place_token
-    puts "Where do you want to place your token? \n\nReview the empty tiles below and enter your choice exactly as displayed. \n
+    puts "Where do you want to place your token? \n\nReview the empty tiles below and enter your choice exactly as displayed. \n\n
+
+  + + + AVAILABLE TILES + + + \n
+
       #{@empty_tiles_list[:empty_tile1]}  #{@empty_tiles_list[:empty_tile2]}  #{@empty_tiles_list[:empty_tile3]} \n
       #{@empty_tiles_list[:empty_tile4]}  #{@empty_tiles_list[:empty_tile5]}  #{@empty_tiles_list[:empty_tile6]} \n
       #{@empty_tiles_list[:empty_tile7]}  #{@empty_tiles_list[:empty_tile8]}  #{@empty_tiles_list[:empty_tile9]} \n
@@ -38,5 +41,9 @@ class GameHost
   def collect_player_tile_choice
     @chosen_tile = gets.chomp
     @chosen_tile
+  end
+
+  def display_player_choice_error_msg(player)
+    puts "#{player}, please try again. You entered '#{@chosen_tile}', but the text must be entered exactly as the options are displayed."
   end
 end

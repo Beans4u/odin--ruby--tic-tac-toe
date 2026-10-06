@@ -4,7 +4,7 @@
 
 Today I'm listening to Gazpacho's albums "March of Ghosts", "Missa Atropos", "Tick Tock", and "Night".
 
-I'm coming back from a long break again (house repairs and a minor injury - nevermind that!), so I'm going to be a little lost. Leading up to this assignment were lessons on OOP and project file management, and linting and RuboCop, so I'm going to incorporate those in this assignment as much as (or to keep the scope lean, _as little as_) reasonable.
+I'm coming back from a long break again (house repairs and a minor injury - never mind that!), so I'm going to be a little lost. Leading up to this assignment were lessons on OOP and project file management, and linting and RuboCop, so I'm going to incorporate those in this assignment as much as (or to keep the scope lean, _as little as_) reasonable.
 
 ## + + + Assignment Objectives + + +
 
@@ -1208,10 +1208,102 @@ Ok, that's me.
 
 I have a job tomorrow, so I won't be super available but I'll try to put in a good album or two of work in. ;)
 
+## + + + + DAY 6 NOTES + + + +
+
+Today may be a short one because I'm busy. But I have a feeling I can make it work, since I got a lot of stuff out of the way this morning, and still managed to do my workout.
+
+ok. OK. OKAY. So I left off with-
+
+Wait a second, it's quiet in here. Let's see... today I'm listening to one of my favourite bands of all time, The Gathering, and I prefer their middle classic stuff, so I'm starting with "Nighttime Birds", and if there's time, "if_then_else", and if I can manage it in the evening, "How to Measure a Planet?".
+
+OK!!! So I left off with- wait, where's my water. [pauses music] Hold on.
+
+(...)
+
+OMGGGG, SO I LEFT OFF WITH data validation. I managed to get it working
+
+I went back up to my game flow list for data val, here it is below. I'm going to work on the error message next.
+
+- DATA VALIDATION:
+  - Validate received tile choice from player. If invalid:
+    - DISPLAY error message
+    - call PROMPT PLAYER method again
+
+### Task: Build method to display error message
+
+Well, I have everything working separately, but putting the methods into an execution method to group them by task is proving challenging. It works procedurally, though. I'm having trouble with NoMethodErrors for undefined methods when trying to pass them in as arguments across classes.
+
+I'm halfway through the album, but I'm going to break for lunch and read articles about this kind of thing.
+
+Ok, I'm fed, caffeinated, and I managed to figure out the class thing. I can instantiate the GameModerator class as such and it solves my problems for now:
+
+```ruby
+# DOCUMENT: tic_tac_toe.rb
+
+# + + + + + + + + REQUIRED CLASS FILES + + + + + + + + + +
+require_relative 'lib/game_moderator'
+require_relative 'lib/board_tiles'
+require_relative 'lib/game_host'
+# require_relative 'lib/run_game'
+
+# + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
+
+board_tiles = BoardTiles.new
+game_host = GameHost.new
+game_moderator = GameModerator.new(board_tiles, game_host)
+
+# will be turn method
+game_moderator.ask_player_to_select_tile
+game_moderator.coordinate_tile_validation
+
+# DOCUMENT: game_moderator.rb
+class GameModerator
+  attr_reader :current_player
+
+  def initialize(board_tiles, game_host)
+    @board_tiles = board_tiles
+    @game_host = game_host
+    @PLAYER1 = 'Player 1'
+    # @PLAYER2 = 'Player 2'
+    @current_player = @PLAYER1
+  end
+
+  def ask_player_to_select_tile
+    @game_host.display_board_tiles(@board_tiles.game_board_tiles)
+    @game_host.ask_player_to_place_token
+    @game_host.collect_player_tile_choice
+  end
+
+  def validate_player_choice
+    p @game_host.empty_tiles_list.value?(@game_host.chosen_tile) # TODO: for testing, remove
+    @game_host.empty_tiles_list.value?(@game_host.chosen_tile)
+  end
+
+  def coordinate_error_player_choice
+    @game_host.display_player_choice_error_msg(@current_player)
+    @game_host.collect_player_tile_choice
+    p "player chose again: #{@game_host.chosen_tile}" # TODO: for testing, remove
+    coordinate_tile_validation
+  end
+
+  def coordinate_tile_validation
+    coordinate_error_player_choice if validate_player_choice == false
+  end
+end
+```
+
+I have the feeling that my helper methods here are a bit on the messy side and that there's probably a leaner way to do this, but this is what I have for now. It's working.
+
+Next, updating the state and stuff.
+
+## Task: Build method(s) to update board tile with player token
+
+I'm going to do this in the `BoardTiles` class. Last track of the album is playing, it's 28 minutes long. Not gonna make it because I have to go now. xD
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
 - How to share information between objects of different classes
 - This project has been so weird for git push corrections that I now have `git commit --amend --no-edit` and `git push --force-with-lease` memorized. I guess you really do fail forward xD
 - Getting ahead of myself building methods I don't need yet.
--
+- Trouble understanding how to pass methods as parameters/arguments in other methods across classes

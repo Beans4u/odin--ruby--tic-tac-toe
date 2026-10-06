@@ -18,4 +18,3 @@ class BoardTiles
     }
   end
 end
-
