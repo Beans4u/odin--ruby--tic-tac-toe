@@ -2,44 +2,41 @@
 
 # GameHost talk to the user on behalf of the game
 class GameHost
-  attr_reader :player_choice
+  attr_reader :present_board_tiles, :chosen_tile, :empty_tiles_list
 
   def initialize
-    @player_choice = nil
+    @empty_tiles_list = {
+      empty_tile1: 'tile1',
+      empty_tile2: 'tile2',
+      empty_tile3: 'tile3',
+      empty_tile4: 'tile4',
+      empty_tile5: 'tile5',
+      empty_tile6: 'tile6',
+      empty_tile7: 'tile7',
+      empty_tile8: 'tile8',
+      empty_tile9: 'tile9'
+    }
   end
 
-  def display_board_tiles(board_tiles)
-    puts "
-      Game Board:
-      #{board_tiles.tile_grid[0]}  #{board_tiles.tile_grid[1]}  #{board_tiles.tile_grid[2]} \n
-      #{board_tiles.tile_grid[3]}  #{board_tiles.tile_grid[4]}  #{board_tiles.tile_grid[5]} \n
-      #{board_tiles.tile_grid[6]}  #{board_tiles.tile_grid[7]}  #{board_tiles.tile_grid[8]} \n
+  def display_board_tiles(game_board)
+    @present_board_tiles = puts "
+    + + + GAME BOARD + + + \n
+    #{game_board[:tile1]}  #{game_board[:tile2]}  #{game_board[:tile3]} \n
+    #{game_board[:tile4]}  #{game_board[:tile5]}  #{game_board[:tile6]} \n
+    #{game_board[:tile7]}  #{game_board[:tile8]}  #{game_board[:tile9]} \n
     "
   end
 
-  def present_available_tiles(board_tiles, game_moderator)
-    puts "
-    - - #{game_moderator.current_player} turn - - \n
-    Which tile will you place your player token on?: \n
-      #{board_tiles.tile_options[0]}  #{board_tiles.tile_options[1]}  #{board_tiles.tile_options[2]} \n
-      #{board_tiles.tile_options[3]}  #{board_tiles.tile_options[4]}  #{board_tiles.tile_options[5]} \n
-      #{board_tiles.tile_options[6]}  #{board_tiles.tile_options[7]}  #{board_tiles.tile_options[8]} \n
+  def ask_player_to_place_token
+    puts "Where do you want to place your token? \n\nReview the empty tiles below and enter your choice exactly as displayed. \n
+      #{@empty_tiles_list[:empty_tile1]}  #{@empty_tiles_list[:empty_tile2]}  #{@empty_tiles_list[:empty_tile3]} \n
+      #{@empty_tiles_list[:empty_tile4]}  #{@empty_tiles_list[:empty_tile5]}  #{@empty_tiles_list[:empty_tile6]} \n
+      #{@empty_tiles_list[:empty_tile7]}  #{@empty_tiles_list[:empty_tile8]}  #{@empty_tiles_list[:empty_tile9]} \n
     "
   end
 
-  def collect_player_choice
-    @player_choice = gets.chomp
-    p "|| host >> game_host.collect_player_choice || #{@player_choice}" # TODO: for testing, remove later
-    @player_choice
-  end
-
-  def display_tile_validation_error(game_moderator)
-    puts "#{game_moderator.current_player}, you entered #{@player_choice}, which is invalid. \n
-    Please review the tile options and enter the tile exactly as presented."
-  end
-
-  # forbid more than one GameHost object from existing in a single game
-  def limit_one_game_host_object
-    p 'this is not developed yet'
+  def collect_player_tile_choice
+    @chosen_tile = gets.chomp
+    @chosen_tile
   end
 end

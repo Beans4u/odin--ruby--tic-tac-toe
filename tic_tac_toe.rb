@@ -8,7 +8,10 @@ require_relative 'lib/run_game'
 
 # + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
 
-run_game = RunGame.new
-run_game.play_turn
-
-@board_tiles.handle_error(@game_host, @run_game, @game_moderator) if @board_tiles.validate_tile_chosen(@game_host) == false
+board_tiles = BoardTiles.new
+game_host = GameHost.new
+game_moderator = GameModerator.new
+game_host.display_board_tiles(board_tiles.game_board_tiles)
+game_host.ask_player_to_place_token
+game_host.collect_player_tile_choice
+game_moderator.validate_player_choice(game_host.empty_tiles_list, game_host.chosen_tile)

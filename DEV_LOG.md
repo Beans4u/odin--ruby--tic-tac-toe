@@ -714,6 +714,500 @@ I still have a few songs left on the last album, but I'm being kicked out of the
 
 ## + + + + DAY 5 NOTES + + + +
 
+I forgot to push yesterday again. Ah, well.
+
+Today I'm listening to Lunatic Soul albums "Fractured" and "Under the Fragmented Sky". "Shaded Woods" if I can get away with the time commitment.
+
+Today's goals:
+
+- Task 1.5 (retroactive): remove the junk data from my code base, essentially start over where reasonable.
+- Task 2, continued & restarted: Build game process flow and class behaviours
+
+## Task 1.5: remove the junk data from my code base
+
+Ok. Well, I pushed yesterdays' work, so if I regret it, I can just pull from GitHub. Let's do this.
+
+Ok I removed all the definitions, but at this point, I'm tempted to also remove the initialize methods as well. Maybe that's part of assuming what I do and don't need. I mean, I've gone this far. Maybe I should start over completely? Maybe I don't need the classes I think I do. Or am I now taking this too far, having previously already determined which classes I was going to use? Yeah, I'll keep them, then.
+
+However, I'm beginning to wonder if I really need the `RunGame` class. My idea was that all the mess of the code that runs the game using the other classes would be completed there, and that I would call those methods from `tic-tac-toe.rb` rather than at the bottom of the `RunGame` class, to keep it clean.
+
+But does that make sense? Is that what people do in industry? If I do it this way, should `RunGame` also require the other classes at the top of the file? Because now I'm wondering if this is where a lot of my problems/confusion could have been avoided.
+
+I guess I can try `RunGame` again, because I like the idea of keeping the game execution file clean. But maybe this time I can try requiring the other classes in `RunGame`? Well I'll leave it out initially and consider adding them if it seems like that's cleaner, or solves a problem.
+
+**Reset Result:**
+
+tic_tac_toe.rb
+
+```ruby
+# + + + + + + + + REQUIRED CLASS FILES + + + + + + + + + +
+require_relative 'lib/game_moderator'
+require_relative 'lib/board_tiles'
+require_relative 'lib/game_host'
+require_relative 'lib/run_game'
+
+# + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
+
+run_game = RunGame.new
+```
+
+run_game.rb
+
+```ruby
+class RunGame
+  attr_reader :game_moderator, :board_tiles, :game_host
+
+  def initialize
+    @game_moderator = GameModerator.new
+    @board_tiles = BoardTiles.new
+    @game_host = GameHost.new
+  end
+end
+```
+
+game_moderator.rb
+
+```ruby
+class GameModerator
+  attr_reader :player1_token, :player2_token, :current_player
+
+  def initialize
+    @player1_token = 'x'
+    @player2_token = 'o'
+    @PLAYER1 = 'Player 1'
+    @PLAYER2 = 'Player 2'
+    @current_player = @PLAYER1 # default for new games
+  end
+end
+```
+
+board_tiles.rb
+
+```ruby
+class BoardTiles
+  attr_reader :empty_tile, :tile_grid, :tile_options
+
+  def initialize
+    @empty_tile = ' '
+    @tile1 = @empty_tile
+    @tile2 = @empty_tile
+    @tile3 = @empty_tile
+    @tile4 = @empty_tile
+    @tile5 = @empty_tile
+    @tile6 = @empty_tile
+    @tile7 = @empty_tile
+    @tile8 = @empty_tile
+    @tile9 = @empty_tile
+
+    # @tile_grid will be displayed to user at beginning of each round
+    @tile_grid = [
+      @tile1,
+      @tile2,
+      @tile3,
+      @tile4,
+      @tile5,
+      @tile6,
+      @tile7,
+      @tile8,
+      @tile9
+    ]
+
+    # tile options to be removed from array after BoardTiles
+    # updates with player's selection
+    @tile1_option = 'tile1'
+    @tile2_option = 'tile2'
+    @tile3_option = 'tile3'
+    @tile4_option = 'tile4'
+    @tile5_option = 'tile5'
+    @tile6_option = 'tile6'
+    @tile7_option = 'tile7'
+    @tile8_option = 'tile8'
+    @tile9_option = 'tile9'
+
+    @tile_options = [
+      @tile1_option,
+      @tile2_option,
+      @tile3_option,
+      @tile4_option,
+      @tile5_option,
+      @tile6_option,
+      @tile7_option,
+      @tile8_option,
+      @tile9_option
+    ]
+  end
+end
+```
+
+Above is why I was considering starting over completely, without initializing anything. This seems like maybe there's a better way. Perhaps using hashes will reduce lines of code since I won't have to declare variables before putting them into a array.
+
+I'm also beginning to wonder if the tile_options should belong to GameHost since the `BoardTiles` class doesn't need to talk to the player, or know what is being communicated with them.
+
+game_host.rb
+
+```ruby
+class GameHost
+  attr_reader :player_choice
+
+  def initialize
+    @player_choice = nil
+  end
+end
+```
+
+The GameHost methods were the most painful to delete because I feel keeping them would save me rework rebuilding those. But I did build them before I needed them, and dems the rules (that I self-imposed).
+
+Aaaaaaah fine. Gone. they're gone. Everything is gone.
+
+**Final Reset Result:**
+
+tic_tac_toe.rb
+
+```ruby
+# + + + + + + + + REQUIRED CLASS FILES + + + + + + + + + +
+require_relative 'lib/game_moderator'
+require_relative 'lib/board_tiles'
+require_relative 'lib/game_host'
+require_relative 'lib/run_game'
+
+# + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
+
+run_game = RunGame.new
+```
+
+run_game.rb
+
+```ruby
+class RunGame
+
+end
+```
+
+game_moderator.rb
+
+```ruby
+class GameModerator
+
+end
+```
+
+board_tiles.rb
+
+```ruby
+class BoardTiles
+
+end
+```
+
+game_host.rb
+
+```ruby
+class GameHost
+
+end
+```
+
+Okay????
+
+Well, let's get (re)building! Hooooooaaaah, boy.
+
+Ok let's do this.
+
+## Task 2 (redux): build out game flow and helper methods
+
+I am once again going to repeat the game flow I estimated from DAY 1 for reference:
+
+**Game flow:**
+
+GAME LOOP:
+
+- PROMPT PLAYER:
+  - DISPLAY: game board
+  - DISPLAY: game board tile options & ask player for their choice
+  - GET: Receive Player one/two game board tile choice
+
+- DATA VALIDATION:
+  - Validate received tile choice from player. If invalid:
+    - DISPLAY error message
+    - call PROMPT PLAYER method again
+
+- UPDATE: the chosen BOARD TILE with the PLAYER TOKEN (for display)
+- UPDATE: remove the chosen BOARD TILE from the EMPTY TILES displayed to user on their turn
+- UPDATE: switch CURRENT PLAYER flag to the next player (for DISPLAY messages)
+- LOGIC: Check for winning or stalemate conditions
+
+- BREAK GAME LOOP IF: winning condition or stalemate condition is met
+
+END GAME FLOW:
+
+- DISPLAY: game results (winner or stalemate)
+- DISPLAY: game board with final play
+- GET: Ask user to start new game or exit terminal
+  - DATA VALIDATION:
+    - DISPLAY: error message for incorrect response
+    - CALL the GET function again
+  - If yes: CALL the GAME START method to reset game
+  - If no: EXIT terminal
+
+I updated it a little bit to get a better feel for it.
+
+### Helper: Prompt Player for tile choice
+
+I'm going to take this slowly. What do I need to accomplish this part of the game flow?
+
+- PROMPT PLAYER:
+  - DISPLAY: game board
+  - DISPLAY: game board tile options & ask player for their choice
+  - GET: Receive Player one/two game board tile choice
+
+I'll start with the `GameHost` class.
+
+```ruby
+class GameHost
+
+  def display_board_tiles
+
+  end
+end
+```
+
+So right off the bat I can see that I need board tiles to display. So I'm actually going to start there and maybe get myself another coffee with hopes it will make me smarter. Or still dumb, but faster. -.-"
+
+## State and Display: Board Tiles
+
+So I was considering using hashes instead of arrays in order to reduce the number of lines the initialize function will use.
+
+And since players can't take their moves back or destroy each-other's tiles, I don't need to hold the empty string in a variable, do I? I was doing it to be idiomatic. Should I do that or forgo it?
+
+We'll see how much I hate it without.
+
+```ruby
+class BoardTiles
+  attr_reader :game_board_tiles
+
+  def initialize
+    @game_board_tiles = {
+      tile1 => ' ',
+      tile2 => ' ',
+      tile3 => ' ',
+      tile4 => ' ',
+      tile5 => ' ',
+      tile6 => ' ',
+      tile7 => ' ',
+      tile8 => ' ',
+      tile9 => ' '
+    }
+  end
+
+  def game_board
+    @game_board = "
+    + + + GAME BOARD + + + \n
+    #{}  #{}  #{} \n
+    #{}  #{}  #{} \n
+    #{}  #{}  #{} \n
+    "
+  end
+end
+```
+
+Ruby is already saying I have too many lines. What do you want from me??? xD
+
+Deal with it. idk how else I'm supposed to get my tile grid. I guess I could construct it in a loop? That feels like over-engineering to me. There's only nine tiles. And then instead of the BoardTiles object just having them on init, I would have to call the method to construct them, which also feels like over-engineering. But as a noobie, I should not be making these assumptions. But I am going to just continue ignoring RuboCop on this one.
+
+Well, that's "Through Shaded Woods" done. I'm going to take my lunch break and have a coffee.
+
+Aaaaand, we're caffeinated.
+
+Ok, this is exciting. It's kind of fun to return to a reset codebase and a new hash. Ok, so what's next?
+
+I tested the hash using `board_tiles = BoardTiles.new` and then `p board_tiles.game_board_tiles` in the `tic_tac_toe.rb` doc, and I received in `'BoardTiles#initialize': undefined local variable or method 'tile1' for an instance of BoardTiles (NameError)`.
+
+So why is tile1 an undefined local variable? I initialized it. Oh, I see. I should have used symbols instead of the rocketship arrow thing. I feel like such a noob. Ok, so now it works.
+
+Wow. It took me the rest of this album to get the hash printing in `tic_tac_toe`, but I got there. Lots of syntax bloopers. Totally forgot about requiring the colon when referencing symbols in `"#{game_board_tiles[:tile1]}"`, having assumed I only needed the colon during hash construction. This and other syntax errors took me the better part of an hour to figure out. Alas. Again, feeling like a noob. I took a long break from this curriculum and it shows.
+
+Well so now I'm onto my last album. I can probably get away with adding another one today. We'll see how the day unfolds. I really do need to run some errands later.
+
+GameHost:
+
+```ruby
+class GameHost
+  attr_reader :present_board_tiles
+
+  def display_board_tiles(game_board)
+    @present_board_tiles = puts "
+    + + + GAME BOARD + + + \n
+    #{game_board[:tile1]}  #{game_board[:tile2]}  #{game_board[:tile3]} \n
+    #{game_board[:tile4]}  #{game_board[:tile5]}  #{game_board[:tile6]} \n
+    #{game_board[:tile7]}  #{game_board[:tile8]}  #{game_board[:tile9]} \n
+    "
+  end
+end
+```
+
+BoardTiles:
+
+```ruby
+class BoardTiles
+  attr_reader :game_board_tiles
+
+  def initialize
+    @game_board_tiles = {
+      tile1: ' ',
+      tile2: ' ',
+      tile3: ' ',
+      tile4: ' ',
+      tile5: ' ',
+      tile6: ' ',
+      tile7: ' ',
+      tile8: ' ',
+      tile9: ' '
+    }
+  end
+end
+```
+
+tic_tac_toe.rb:
+
+```ruby
+# + + + + + + + + REQUIRED CLASS FILES + + + + + + + + + +
+require_relative 'lib/game_moderator'
+require_relative 'lib/board_tiles'
+require_relative 'lib/game_host'
+require_relative 'lib/run_game'
+
+# + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
+
+board_tiles = BoardTiles.new
+game_host = GameHost.new
+# game_board_tiles = board_tiles.game_board_tiles
+game_host.display_board_tiles(board_tiles.game_board_tiles)
+```
+
+So far so good. Next:
+
+## Prompt user for tile to place their player token upon
+
+Ok, Rin. You do not need to create the player token. I know it's tempting, but let us be steadfast in our resolve to build items only as they are needed. I speak to myself using the royal "we". Since childhood. Who can say why. I keep trying to correct it as I go, because it feels embarrassing. But surely, I'm not the only one who speaks/refers to themselves in the third person?
+
+I'm musing rather than coding. Let's do this. Self. Let us... yeah.
+
+**who should own #gets?**
+So the `GameHost` owns communications, but should it own the stored variable to pass along? Or should `BoardTiles` own the `#gets` function? Or perhaps the `GameHost` uses `#gets`, and just stores it in `BoardTiles`? I'm a little confused about the ownership situation. Previously, I gave it to GameHost, but I'm pretty sure it started out in BoardTiles, which means that I had this conversation with myself before and that's where I landed.
+
+I think since hte `GameHost` is the one asking, it should be the one collecting. But maybe I can save it directly to `BoardTiles`? Wait, I'm pretty sure separation of concerns means that classes are supposed to mind their own business. Does that mean my `present_board_tiles` `#puts` statement should have been saved as a variable in `BoardTiles` and then used in `GameHost`? Well, no, because `GameHost` constructs the sentences that it communicates, and at any rate, I'm still giving `GameHost` the `BoardTiles` class object as an argument. Wow, this is confusing. What are the industry standards for this type of MCP style architecture? Maybe I'm overthinking this. I'm just going to give the #gets message to `GameHost` and move on.
+
+**who should own the list of empty tiles?**
+So to present the empty tiles to the player, I need to construct a hash or array of empty tiles adn display that to the player. After each turn, the tile that player placed a token on will be removed from this hash or array.
+
+Which class should own this? It is used for only one purpose, to display token-placement options to the players. And since the BoardTiles class doesn't need to see or know about this, I'm going to keep them in `GameHost` this time around. Last time I kept them in `BoardTiles`, but that only made sense semantically. Right? What I like most about this is I don't have to pass anything in. I'll just try it out.
+
+Well, ok. That was very easy.
+
+Next: validate the text.
+
+## Task: Validate the player's input text (chosen tile)
+
+I validated it, hooray. My eyes are turning to dust.
+
+I'm not through the third album yet. I wound up getting sent to the hardware store for an emergency purchase for a home maintenance project my partner is onto. After that, I had to run an errand of my own, then the rest of the day got away from me. But I managed to get most of the last album in after dinner. Yeah, that's how I'm measuring time, I realize. To each their own?
+
+Final code for the day:
+
+```ruby
+# + + + GAME MODERATOR CLASS + + +
+class GameModerator
+
+  def validate_player_choice(empty_tiles, player_choice)
+    p empty_tiles.has_value?(player_choice)
+    empty_tiles.has_value?(player_choice)
+  end
+end
+
+# + + + BOARD TILES CLASS + + +
+class BoardTiles
+  attr_reader :game_board_tiles
+
+  def initialize
+    @game_board_tiles = {
+      tile1: ' ',
+      tile2: ' ',
+      tile3: ' ',
+      tile4: ' ',
+      tile5: ' ',
+      tile6: ' ',
+      tile7: ' ',
+      tile8: ' ',
+      tile9: ' '
+    }
+  end
+end
+
+# + + + GAME HOST CLASS + + +
+class GameHost
+  attr_reader :present_board_tiles, :chosen_tile, :empty_tiles_list
+
+  def initialize
+    @empty_tiles_list = {
+      empty_tile1: 'tile1',
+      empty_tile2: 'tile2',
+      empty_tile3: 'tile3',
+      empty_tile4: 'tile4',
+      empty_tile5: 'tile5',
+      empty_tile6: 'tile6',
+      empty_tile7: 'tile7',
+      empty_tile8: 'tile8',
+      empty_tile9: 'tile9'
+    }
+  end
+
+  def display_board_tiles(game_board)
+    @present_board_tiles = puts "
+    + + + GAME BOARD + + + \n
+    #{game_board[:tile1]}  #{game_board[:tile2]}  #{game_board[:tile3]} \n
+    #{game_board[:tile4]}  #{game_board[:tile5]}  #{game_board[:tile6]} \n
+    #{game_board[:tile7]}  #{game_board[:tile8]}  #{game_board[:tile9]} \n
+    "
+  end
+
+  def ask_player_to_place_token
+    puts "Where do you want to place your token? \n\nReview the empty tiles below and enter your choice exactly as displayed. \n
+      #{@empty_tiles_list[:empty_tile1]}  #{@empty_tiles_list[:empty_tile2]}  #{@empty_tiles_list[:empty_tile3]} \n
+      #{@empty_tiles_list[:empty_tile4]}  #{@empty_tiles_list[:empty_tile5]}  #{@empty_tiles_list[:empty_tile6]} \n
+      #{@empty_tiles_list[:empty_tile7]}  #{@empty_tiles_list[:empty_tile8]}  #{@empty_tiles_list[:empty_tile9]} \n
+    "
+  end
+
+  def collect_player_tile_choice
+    @chosen_tile = gets.chomp
+    @chosen_tile
+  end
+
+# + + + TIC TAC TOE PROJECT FILE + + +
+# (This is mostly for testing, not sure if I'm going to use the RunGame class or not)
+
+  # + + + + + + + + REQUIRED CLASS FILES + + + + + + + + + +
+require_relative 'lib/game_moderator'
+require_relative 'lib/board_tiles'
+require_relative 'lib/game_host'
+require_relative 'lib/run_game'
+
+# + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
+
+board_tiles = BoardTiles.new
+game_host = GameHost.new
+game_moderator = GameModerator.new
+game_host.display_board_tiles(board_tiles.game_board_tiles)
+game_host.ask_player_to_place_token
+game_host.collect_player_tile_choice
+game_moderator.validate_player_choice(game_host.empty_tiles_list, game_host.chosen_tile)
+end
+```
+
+Ok, that's me.
+
+I have a job tomorrow, so I won't be super available but I'll try to put in a good album or two of work in. ;)
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
