@@ -17,4 +17,6 @@ class BoardTiles
       tile9: ' '
     }
   end
+
+
 end

@@ -16,8 +16,10 @@ game_moderator = GameModerator.new(board_tiles, game_host)
 game_moderator.ask_player_to_select_tile
 game_moderator.coordinate_tile_validation
 
+game_moderator.place_player_token_on_tile
 
-
+game_moderator.update_available_tiles
+game_moderator.update_current_player
 
   # branch on val failure on above
   # will be try again method

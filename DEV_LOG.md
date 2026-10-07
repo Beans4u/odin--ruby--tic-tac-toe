@@ -1214,7 +1214,7 @@ Today may be a short one because I'm busy. But I have a feeling I can make it wo
 
 ok. OK. OKAY. So I left off with-
 
-Wait a second, it's quiet in here. Let's see... today I'm listening to one of my favourite bands of all time, The Gathering, and I prefer their middle classic stuff, so I'm starting with "Nighttime Birds", and if there's time, "if_then_else", and if I can manage it in the evening, "How to Measure a Planet?".
+Wait a second, it's quiet in here. Let's see... today I'm listening to one of my favourite bands of all time, The Gathering, and I prefer their middle classic stuff, so I'm starting with "How to Measure a Planet?", and if there's time, "if_then_else", and if I can manage it in the evening, "Souvenirs".
 
 OK!!! So I left off with- wait, where's my water. [pauses music] Hold on.
 
@@ -1298,7 +1298,112 @@ Next, updating the state and stuff.
 
 ## Task: Build method(s) to update board tile with player token
 
-I'm going to do this in the `BoardTiles` class. Last track of the album is playing, it's 28 minutes long. Not gonna make it because I have to go now. xD
+I'm going to do this in the `BoardTiles` class. Last track of this album is playing, it's 28 minutes long. Not gonna make it because I have to go now. xD
+
+(...)
+
+Ok I'm back. Haggard, morose. But back. Got "If_then_else" album playing, mood improving. Substantially.
+
+So now I'm onto building the board tiles update methods. Let's do this.
+
+I need to find the `@chosen_tile's` matching `@game_board_tile` key, but that's going to be tricky because the `@game_board_tile` hash keys are symbols. Do they have to be symbols, though? First I'll see if there's a way to match them, if not, I'll save myself hte headache and [change them to strings](https://stackoverflow.com/a/25538021).
+
+another_family[somevar.to_sym]
+
+So I found out you can convert strings to symbols using `#to_sym`, and I tried the below from my `game_moderator` doc, and it worked: `@board_tiles.game_board_tiles[@game_host.chosen_tile.to_sym]` # output: `"oh my god it worked"` (I temporarily changed the `GameHost` instantiated value to that sentence to see it in the console).
+
+Oh my gosh, I got it working. It's so exciting. I'm so glad I started over. Never building out hypothetical methods ever again.
+
+So I guess now I need to remove player's chosen tile from the available tile offerings (`@empty_tiles_list`). It lives in `GameHost`.
+
+Ok I found out about [rassoc](https://www.geeksforgeeks.org/ruby/ruby-hash-rassoc-function/) ([here](https://rubytalk.org/t/find-has-key-from-a-value/57371/3)) and I wish I knew this sooner. This has changed my life. It works like a dream. Everybody should know about #rassoc.
+
+My album ended. Alas. Listening to "Souvenirs". Eyes drying, though.
+
+Currently I'm struggling to find a way to use the array variable I have containing the symbol to find the key in the `@empty_tiles_list` hash. From there, I can use it to access and update the hash value by key.
+
+```ruby
+  def update_available_tiles
+    # TODO: delete all #p and #puts
+    tile_key = @game_host.empty_tiles_list.rassoc(@game_host.chosen_tile)
+    puts 'tile key and value:'
+    puts tile_key
+    tile_key.pop
+    puts 'tile key only:'
+    puts tile_key
+    puts 'does it have tile_key as key?'
+    p @game_host.empty_tiles_list.has_key?(tile_key)
+  end
+```
+
+output with `#puts` on `tile_key`:
+
+```
+tile key and value:
+empty_tile1
+tile1
+tile key only:
+empty_tile1
+does it have tile_key as key?
+false
+```
+
+output with `#p` on `tile_key`:
+
+```
+tile key and value:
+[:empty_tile1, "tile1"]
+tile key only:
+[:empty_tile1]
+does it have tile_key as key?
+false
+```
+
+So for some reason, I'm getting the text without the symbol's colon on `#puts`, and with it on `#p`, but which version is used as the hash. Further, only the key appears on `#puts`, why?
+
+Ok, so I spoke to a rubber duck, a senior dev for Python, and it turns out that I should use a spread rather than `#pop` on the `tile_key` array for better communication, but it should also work better, but I can't remember why.
+
+OH MY GOODNESS, the spread thing worked. I am so pleased.
+
+```ruby
+  def update_available_tiles
+    # TODO: delete all #p and #puts
+    tile_key = @game_host.empty_tiles_list.rassoc(@game_host.chosen_tile)
+    puts 'tile key and value:'
+    p tile_key
+    tile, value = *tile_key
+    puts 'tile key only:'
+    p tile
+    puts 'does it have tile as key?'
+    p @game_host.empty_tiles_list.has_key?(tile)
+  end
+```
+
+output:
+
+```
+tile key and value:
+[:empty_tile1, "tile1"]
+tile key only:
+:empty_tile1
+does it have tile as key?
+true
+```
+
+I know I've seen and even used this method before, but taking that long break from TOP really made me rusty. I see I have a lot to look forward to.
+
+I updated the tile list! No single source of truth, but that's ok, it's not a portfolio project, and the program too small for that to matter.
+
+Ok, so let's take a second look at my list here:
+
+- UPDATE: the chosen BOARD TILE with the PLAYER TOKEN (for display)
+- UPDATE: remove the chosen BOARD TILE from the EMPTY TILES displayed to user on their turn
+- UPDATE: switch CURRENT PLAYER flag to the next player (for DISPLAY messages)
+- LOGIC: Check for winning or stalemate conditions
+
+Ok so the last update is to switch the `current_player` flag. Let's do this, and then I'm going to wind down my day.
+
+Oh my goodness, that was easy as anything. I'm pleased with my work today.
 
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
