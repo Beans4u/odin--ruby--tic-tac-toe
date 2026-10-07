@@ -13,13 +13,17 @@ game_host = GameHost.new
 game_moderator = GameModerator.new(board_tiles, game_host)
 
 # will be turn method
+def play_turn(game_moderator)
+  game_moderator.ask_player_to_select_tile
+  game_moderator.coordinate_tile_validation
 
-game_moderator.ask_player_to_select_tile
-game_moderator.coordinate_tile_validation
+  game_moderator.place_player_token_on_tile
 
-game_moderator.place_player_token_on_tile
+  game_moderator.update_available_tiles
 
-game_moderator.update_available_tiles
+  game_moderator.update_current_player_token
+  game_moderator.update_current_player
+  game_moderator.check_end_game_conditions
+end
 
-game_moderator.update_current_player_token
-game_moderator.check_end_game_conditions
+play_turn(game_moderator) unless game_moderator.check_end_game_conditions == true

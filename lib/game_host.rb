@@ -27,8 +27,8 @@ class GameHost
     "
   end
 
-  def ask_player_to_place_token
-    puts "Where do you want to place your token? \n\nReview the empty tiles below and enter your choice exactly as displayed. \n\n
+  def ask_player_to_place_token(player)
+    puts "   - - #{player} turn! - - \nWhere do you want to place your token? \n\nReview the empty tiles below and enter your choice exactly as displayed.
 
   + + + AVAILABLE TILES + + + \n
 

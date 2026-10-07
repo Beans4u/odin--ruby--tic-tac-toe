@@ -1663,6 +1663,94 @@ So before starting on the end game helper methods, I will work on the game flow 
 
 ## TASK: Develop game flow methods
 
+How serendipitous. Just in time to start the "Spirit of the Age" album.
+
+I'm just going to wrap all the functions I have in tic-tac-toe.rb so far into one `play_turn` method and take it from there.
+
+```ruby
+def play_turn(game_moderator)
+  game_moderator.ask_player_to_select_tile
+  game_moderator.coordinate_tile_validation
+
+  game_moderator.place_player_token_on_tile
+
+  game_moderator.update_available_tiles
+
+  game_moderator.update_current_player_token
+  game_moderator.check_end_game_conditions
+end
+
+play_turn(game_moderator) until game_moderator.check_end_game_conditions == true
+```
+
+final output:
+
+```
+TESTING: tile8 now holds Player 1 token: o
+TESTING: current player token updated to: x
+Player 1 wins!
+Player 1 wins!
+```
+
+I entered each tile in order, but every tile was an 'x'.
+
+I have three bugs:
+
+1. player token is not updating after each turn
+2. current player is not updating after turns
+3. I need to enter an additional tile to trigger the end game conditions after the win conditions are met
+4. Win message printing twice
+
+Let's squish these before adding helper methods to `play_turn`.
+
+Bug solve:
+
+1. I never updated the `place_player_token_on_tile` method with the `@current_player_token` assignment, was still using `@player1_token` that I was using for testing.
+2. I somehow never called `game_moderator.update_current_player` in `tic_tac_toe.rb` even though I remember testing it there. I somehow deleted it along the way.
+3. AAAAAAAAAAAAAAAAAAAUUGGHHHH
+
+Ok so I'm in the bonus content of the album which I normally ignore. I'm galling it here.
+
+I am trying to figure out how to get the game to loop with a line:
+
+```ruby
+play_turn(game_moderator) unless game_moderator.check_end_game_conditions == true
+```
+
+and I updated some code while debugging, this is some of it:
+
+```ruby
+  def check_stalemate_condition
+    puts "TESTING: check_stalemate_condition: #{@board_tiles.game_board_tiles.any?(' ')}" # TODO: delete
+    @board_tiles.game_board_tiles.any?(' ') ? false : true
+  end
+
+  def check_end_game_conditions
+    if check_win_conditions == true
+      puts "TESTING END GAME: check win conditions: #{@check_win_conditions == true}" # TODO delete
+      true
+    elsif check_stalemate_condition == true
+      true
+      puts "TESTING END GAME: check stalemate conditions: #{@check_stalemate_condition == true}" # TODO delete
+    end
+  end
+```
+
+iirc, all Ruby objects are truthy except for `#false` and `#nil`. But I'm returning false as the output. I think that should be working for my purposes, shouldn't it?
+
+I'm going to return to this tomorrow morning. I am busy this evening, so I've got to call it here for the day.
+
+I'll think about this some more and hopefully by tomorrow morning I'll have a few more ideas, or will have read some articles about this. Or just give up and use an end game flag after all.
+
+Also, my `GameModerator` class grew to 128 lines, and I'm not sure this is something deleting all my test prints will fix. I may or may not take some time refactoring, perhaps moving the end game condition methods out.
+
+Tomorrow's tasks:
+
+1. figure out truthy method call, or build loop or flag
+2. consider refactoring `GameModerator` which grew too large
+3. move `win_message` to `GameHost` since it's communicating to the user. I slept on that.
+4. Begin work on end game flow and/or helper methods.
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
@@ -1672,3 +1760,4 @@ So before starting on the end game helper methods, I will work on the game flow 
 - Trouble understanding how to pass methods as parameters/arguments in other methods across classes
 - Trouble figuring out how to find keys in hashes using a variable if the key is a symbol.
 - Don't remember how to test in IRB and it's starting to hurt
+- trouble figuring out how to use a method as truthy for conditional method call.
