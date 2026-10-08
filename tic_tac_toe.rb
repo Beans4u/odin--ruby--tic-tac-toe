@@ -26,4 +26,10 @@ def play_turn(game_moderator)
   game_moderator.check_end_game_conditions
 end
 
-play_turn(game_moderator) unless game_moderator.check_end_game_conditions == true
+while game_moderator.game_status == game_moderator.in_progress
+  puts "tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: #{game_moderator.game_status}"
+  play_turn(game_moderator)
+  puts "tic_tac_toe.rb WHILE LOOP || game_moderator.game_status == game_moderator.in_progress is: #{game_moderator.game_status == game_moderator.in_progress}"
+end
+
+puts "tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: #{game_moderator.game_status}"

@@ -1746,10 +1746,111 @@ Also, my `GameModerator` class grew to 128 lines, and I'm not sure this is somet
 
 Tomorrow's tasks:
 
-1. figure out truthy method call, or build loop or flag
+1. figure out truthy method call, or build loop or flag (figure out `play_turn` flow)
 2. consider refactoring `GameModerator` which grew too large
 3. move `win_message` to `GameHost` since it's communicating to the user. I slept on that.
 4. Begin work on end game flow and/or helper methods.
+
+## + + + + DAY 7 + + + +
+
+WHOOOOOF, what a day so far. It's the afternoon and I'm only just sitting down. I have to stop at 3:30 so I can be ready to leave at 4 and head to a tournament thingy. So let's do this.
+
+I probably have at least two albums capacity today. I want to calm down and lock in, so I'm going to play an old favourite of mine, Porcupine Tree. I'm doing "Lightbulb Sun" and if there's time, some of "In Absentia"
+
+Ok, so my first task is to figure out the `play_turn` flow.
+
+## Task: Work on play_turn termination condition
+
+The problem with the way it's written now is that it's only executing once. I'm going to just put it in a while loop.
+
+Ok this is a little weird.
+
+```ruby
+# --- tic_tac_toe.rb ----
+while game_moderator.game_status == game_moderator.in_progress
+  puts "tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: #{game_moderator.game_status}"
+  play_turn(game_moderator)
+  puts "tic_tac_toe.rb WHILE LOOP || game_moderator.game_status == game_moderator.in_progress is: #{game_moderator.game_status == game_moderator.in_progress}"
+end
+
+puts "tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: #{game_moderator.game_status}"
+
+# --- game_moderator.rb ----
+  attr_reader :current_player, :game_status, :in_progress, :game_over
+
+  def initialize(board_tiles, game_host)
+    # ...
+    @in_progress = 'in progress'
+    @game_over = 'game over'
+    @game_status = @in_progress
+
+  # ...
+
+ def check_end_game_conditions
+    if check_win_conditions == true
+      puts "check_end_game_conditions: -IF- check_win_conditions == true || #{@check_win_conditions == true}" # TODO delete
+      @game_status = @game_over
+
+    elsif check_stalemate_condition == true
+      puts "check_end_game_conditions: -ELSIF- check_stalemate_condition == true || #{@check_stalemate_condition == true}" # TODO delete
+      @game_status = @game_over
+    end
+  end
+```
+
+Right??
+
+Then I run `ruby tic_tac_toe.rb` and play one round, then it prints this and exits:
+
+```
+tic_tac_toe.rb WHILE LOOP || item contains: in progress
+
+# ... (game text)
+
+check_win_conditions || else statement: false
+check_stalemate_condition || @board_tiles.game_board_tiles.any?(' '): false
+check_end_game_conditions: -ELSIF- check_stalemate_condition == true || false
+tic_tac_toe.rb WHILE LOOP || game_moderator.game_status == game_moderator.in_progress is: false
+tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: game over
+```
+
+If `check_stalemate_condition` is false, then why is `#elsif` executing?
+
+Oh I can't believe I've been looking at this for 10 tracks and only now realize that `@board_tiles.game_board_tiles.any?(' '): false` is the problem, there are still nine tiles containing `' '` after turn 1. Good grief. Look, it's that kind of day.
+
+At least the music is good.
+
+So earlier I decided not to use an `@empty_tile` variable when I started the classes from scratch, and now I'm putting it back in because the #any? method isn't picking up the string, and I want to see if using a variable fixes it. If not, I have slightly more idiomatic code.
+
+Ok, I played with check_stalemate_condition some more and wound up with this:
+
+```ruby
+  def check_stalemate_condition
+    # (must be false until all @game_board_tiles hold player tokens)
+    puts "check_stalemate_condition || @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile): #{@board_tiles.game_board_tiles.any?(@board_tiles.empty_tile)}" # TODO: delete
+
+    puts "check_stalemate_condition || @game_board_tiles[:tile1] contains: #{@board_tiles.game_board_tiles[:tile1]}" # TODO: delete
+    puts "check_stalemate_condition || @game_board_tiles[:tile2] contains: #{@board_tiles.game_board_tiles[:tile2]}" # TODO: delete
+
+    @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile) ? false : true
+  end
+```
+
+output:
+
+```
+check_stalemate_condition || @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile): false
+check_stalemate_condition || @game_board_tiles[:tile1] contains: x
+check_stalemate_condition || @game_board_tiles[:tile2] contains:
+```
+
+Maybe I should be using a comparison operator instead?
+
+e.g. _do_thing_ if `@board_tiles`.`game_board_tiles`[`:tile1`] `==` `@board_tiles`.`empty_tile`
+
+I should be reading about this, but I'm just hacking away at it hoping to get lucky. Noobie move, Rin. Well, I'm out of time.
+
+Wish me luck at the tourney!
 
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
