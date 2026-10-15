@@ -29,6 +29,9 @@ def play_turn(game_moderator, game_over_logic)
   game_over_logic.check_end_game_conditions
 end
 
-until game_over_logic.game_status == game_over_logic.game_over
+loop do
+
   play_turn(game_moderator, game_over_logic)
+
+  break if game_over_logic.game_status == game_over_logic.game_over
 end

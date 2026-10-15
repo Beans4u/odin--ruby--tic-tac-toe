@@ -70,7 +70,7 @@ class GameOverLogic
       @game_host.announce_game_winner(@game_moderator)
       @game_status = @game_over
 
-    # (must be true until all @game_board_tiles hold player tokens)
+    # must be true until all @game_board_tiles hold player tokens
     elsif check_stalemate_condition == false
       @game_status = @game_over
     end

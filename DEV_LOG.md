@@ -2006,6 +2006,30 @@ I created GameOverLogic, for changes see commit ce3479d "refactor: reduce size o
 
 Complete, but as I was doing this, I notice that the win condition is triggering late again. I need to look at that next.
 
+### Task: Investigate late win condition trigger
+
+I don't understand. Changing the play_turn `#while` to `#until` fixed it last time. I'm not sure why the problem is recurring when it's been fine until either I moved the end game logic from the `GameModerator` class to the new `GameOverLogic` class, or when I move the win message from `GameModerator` to `GameHost`. That can't be it. I'm going to check the `GameOverLogic` class, something must have gone wrong there.
+
+What could have caused this to happen?
+
+Looking at the file, I did clean it up a commit or two ago to remove the `@game_status` flag assignment from the `check_win_condition` case statement to `check_end_game_conditions` method. I put them all back into the case statement, but that didn't resolve it, so I undid the change.
+
+Ok, I'm thinking it's something to do with the loop again. I think whatever fixed it before must have been a fluke. I'm going to try a different approach.
+
+(...)
+
+I like the look of the `#do..while` loop in this GeeksforGeeks [article](https://www.geeksforgeeks.org/ruby/ruby-loops-for-while-do-while-until/), because it uses `#break`.
+
+(...)
+
+Well, that did absolutely nothing.
+
+So it's not the loop, then?
+
+I still have exactly half this album left (but it's a longer one), but I'm out of time!
+
+Tomorrow I'll use the debugger so I can step through the code to see exactly where the game-ending code is executing late and take it from there.
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
