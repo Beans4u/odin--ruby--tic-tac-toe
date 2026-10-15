@@ -4,6 +4,7 @@
 require_relative 'lib/game_moderator'
 require_relative 'lib/board_tiles'
 require_relative 'lib/game_host'
+require_relative 'lib/game_over_logic'
 # require_relative 'lib/run_game'
 
 # + + + + + + + + PROCEDURAL RUN GAME CODE + + + + + + + +
@@ -11,9 +12,10 @@ require_relative 'lib/game_host'
 board_tiles = BoardTiles.new
 game_host = GameHost.new
 game_moderator = GameModerator.new(board_tiles, game_host)
+game_over_logic = GameOverLogic.new(board_tiles, game_host, game_moderator)
 
 # will be turn method
-def play_turn(game_moderator)
+def play_turn(game_moderator, game_over_logic)
   game_moderator.ask_player_to_select_tile
   game_moderator.coordinate_tile_validation
 
@@ -24,9 +26,9 @@ def play_turn(game_moderator)
   game_moderator.update_current_player_token
   game_moderator.update_current_player
 
-  game_moderator.check_end_game_conditions
+  game_over_logic.check_end_game_conditions
 end
 
-until game_moderator.game_status == game_moderator.game_over
-  play_turn(game_moderator)
+until game_over_logic.game_status == game_over_logic.game_over
+  play_turn(game_moderator, game_over_logic)
 end

@@ -1994,6 +1994,12 @@ I think I was expecting to have problems. Guess I know what I'm doing [creeping 
 
 Commit. COMMIIIIIT. This... third coffee was unnecessary. I see that now.
 
+### Task: Refactor GameModerator to reduce size
+
+Ok so earlier I was thinking about moving the end game logic to its own class, and now we definitely need to to save space.
+
+Let's do this!
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
