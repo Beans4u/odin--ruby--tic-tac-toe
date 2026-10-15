@@ -1108,7 +1108,7 @@ Well, ok. That was very easy.
 
 Next: validate the text.
 
-## Task: Validate the player's input text (chosen tile)
+### Task: Validate the player's input text (chosen tile)
 
 I validated it, hooray. My eyes are turning to dust.
 
@@ -1302,7 +1302,7 @@ I have the feeling that my helper methods here are a bit on the messy side and t
 
 Next, updating the state and stuff.
 
-## Task: Build method(s) to update board tile with player token
+### Task: Build method(s) to update board tile with player token
 
 I'm going to do this in the `BoardTiles` class. Last track of this album is playing, it's 28 minutes long. Not gonna make it because I have to go now. xD
 
@@ -1423,7 +1423,7 @@ Where am I? I'm still distracted. It's time to lock in.
 
 Stalemate and Win Condition logic. Coming right at you.
 
-## Task: Build logic that checks for stalemate and win conditions.
+### Task: Build logic that checks for stalemate and win conditions.
 
 Ok, so I'm feeling weird about this. I'm not sure where I want to keep the win/stalemate conditions. I feel that `GameModerator` should own it, but I'm worried the class is getting too big. I'm gonna look into this a bit.
 
@@ -1661,7 +1661,7 @@ So what's next according to my game flow list is to break the game loop once the
 
 So before starting on the end game helper methods, I will work on the game flow methods. I have the feeling that if there's a lot of refactoring involved here, I'll regret coding the whole game before starting on this.
 
-## TASK: Develop game flow methods
+### Task: Develop game flow methods
 
 How serendipitous. Just in time to start the "Spirit of the Age" album.
 
@@ -1759,7 +1759,7 @@ I probably have at least two albums capacity today. I want to calm down and lock
 
 Ok, so my first task is to figure out the `play_turn` flow.
 
-## Task: Work on play_turn termination condition
+### Task: Work on play_turn termination condition
 
 The problem with the way it's written now is that it's only executing once. I'm going to just put it in a while loop.
 
@@ -1852,7 +1852,7 @@ I should be reading about this, but I'm just hacking away at it hoping to get lu
 
 Wish me luck at the tourney!
 
-## + + + + DAY 8 + + + +
+## + + + + DAY 8 (a very short day) + + + +
 
 A very busy Thanksgiving weekend later (plus a catch-up day for errands and chores), and I'm back. It's the afternoon and I only just sat down. I'm busy this evening, so I'm back for at least one solid album of something, maybe one and a half.
 
@@ -1860,7 +1860,7 @@ Reviewing my Day 7 notes, I'm having trouble identifying empty quotes in a set. 
 
 I'm feeling off today. I'm going to listen to This Patch of Sky, album "Three Small Spaces".
 
-## Task: Work on play_turn termination condition: find way to recognize `empty_tile` in stalemate condition.
+### Task: Work on play_turn termination condition: find way to recognize `empty_tile` in stalemate condition.
 
 I found this on StackOverflow:
 
@@ -1941,6 +1941,50 @@ Tomorrow's tasks:
 3. move `win_message` to `GameHost` since it's communicating to the user. I slept on that.
 4. Begin work on end game flow and/or helper methods.
 
+## + + + + DAY 9 + + + +
+
+Whooooooofffffff so it's 1:30 and I'm just sitting down. Why life so busy? Why errands? Why all of it? I'm busy tonight, too. But I'm going to squeeze in an album or two.
+
+Today I'm listening to Ayreon's "Actual Fantasy" (which might be distracting because Computer Eyes is on it, and there's no way I can listen to that one without pumping the volume to 11) and "01011001".
+
+**Reflections: Stalemate was never tested**
+So while running errands this morning, it occurred to me that I never actually solved my stalemate condition, or at least never tested for it. I just fixed a bug that prevented the code from detecting an empty string.
+
+**Reflections: I need to put the space back and find a new fix**
+I also forgot to solve and even mention a problem with my solution to that which is that now the space I removed from `@empty_tile` makes the `game_board_tiles` uneven when tokens are placed.
+
+### Task: Continue working on stalemate condition, preserving the space in `@empty_tile`.
+
+I'm going to talk less, because I think it's a bit of a time-sink.
+
+Ok so I got it working, except on test, the stalemate still doesn't trigger because I run out of tiles and I can't enter anything more in due to the error handling. The delayed win response requiring and extra turn is the bottleneck here.
+
+```ruby
+def check_stalemate_condition
+    puts "check_stalemate_condition || @board_tiles.game_board_tiles.value?(' ') >> #{@board_tiles.game_board_tiles.value?(' ')}"
+
+    @board_tiles.game_board_tiles.value?(' ')
+  end
+
+  def check_end_game_conditions
+    if check_win_conditions == :win_condition_true
+      puts "check_end_game_conditions: -IF- check_win_conditions == true is: || #{@check_win_conditions == :win_condition_true}" # TODO delete
+      @game_status = @game_over
+
+    elsif check_stalemate_condition == false
+      # (must be false until all @game_board_tiles hold player tokens)
+      puts "check_end_game_conditions: -ELSIF- check_stalemate_condition == true is: || #{@check_stalemate_condition == false}" # TODO delete
+      @game_status = @game_over
+    end
+  end
+```
+
+I added symbol to be used as a flag since I can't use truthy values in Ruby (I keep thinking in JavaScript). I saw this architecture in a StackOverflow thing from a search on a previous day (or project??) and thought it was a great idea.
+
+It works perfectly here as `:win_condition_true`, and I'm really happy with it. The truthy stalemate condition still works (in theory), because the only outputs is true or false. I guess I could have done the same with the switch statement, though (output is: `check_stalemate_condition || @board_tiles.game_board_tiles.value?(' ') >> true`). The true test can't be completed until the win condition trips when it's supposed to.
+
+### Task: fix trigger for end game conditions
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
@@ -1951,3 +1995,4 @@ Tomorrow's tasks:
 - Trouble figuring out how to find keys in hashes using a variable if the key is a symbol.
 - Don't remember how to test in IRB and it's starting to hurt
 - trouble figuring out how to use a method as truthy for conditional method call.
+- how to exit a terminal program during a prompt (ctrl + z).
