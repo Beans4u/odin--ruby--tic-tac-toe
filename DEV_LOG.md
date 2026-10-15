@@ -1985,6 +1985,15 @@ It works perfectly here as `:win_condition_true`, and I'm really happy with it. 
 
 ### Task: fix trigger for end game conditions
 
+Looking at `tic_tac_toe.rb`, I have the feeling the problem lies with how the `#while` loop is set up.
+
+Ok, yes. I changed `#while` to `#until`, and the check for `in_progress` to `game_over`, and it worked right away. Now to test for stalemate: It works!! IT WORKS! I can code! I can do this! I CAN WIN!
+[clears throat]. Ah, yes. [dusts self off] Anyway.
+
+I think I was expecting to have problems. Guess I know what I'm doing [creeping smug face I definitely couldn't have earned this early in my TOP career].
+
+Commit. COMMIIIIIT. This... third coffee was unnecessary. I see that now.
+
 ## + + + + + Pain Points / Lessons Learned + + + + +
 
 - Thinking I can use classes like hashes to access information
