@@ -1998,7 +1998,13 @@ Commit. COMMIIIIIT. This... third coffee was unnecessary. I see that now.
 
 Ok so earlier I was thinking about moving the end game logic to its own class, and now we definitely need to to save space.
 
-Let's do this!
+Let's do this! What should I call it? EndGameLogic? EndGameConditions? MarvelsEndGame? GameOverChecks? GameOverLogic?
+
+I created GameOverLogic, for changes see commit ce3479d "refactor: reduce size of GameModerator class".
+
+### Task: Move `win_message` from `GameOverLogic` class to `GameHost` class
+
+Complete, but as I was doing this, I notice that the win condition is triggering late again. I need to look at that next.
 
 ## + + + + + Pain Points / Lessons Learned + + + + +
 

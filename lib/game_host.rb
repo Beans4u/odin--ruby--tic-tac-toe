@@ -46,4 +46,8 @@ class GameHost
   def display_player_choice_error_msg(player)
     puts "#{player}, please try again. You entered '#{@chosen_tile}', but the text must be entered exactly as the options are displayed."
   end
+
+  def announce_game_winner(game_moderator)
+    puts "#{game_moderator.current_player} wins!"
+  end
 end
