@@ -76,28 +76,34 @@ class GameModerator
       @board_tiles.game_board_tiles[:tile2] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile3] == @current_player_token
       puts win_message
+      @game_status = @game_over
     when @board_tiles.game_board_tiles[:tile4] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile5] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile6] == @current_player_token
       puts win_message
+      @game_status = @game_over
     when @board_tiles.game_board_tiles[:tile7] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile8] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile9] == @current_player_token
       puts win_message
+      @game_status = @game_over
 
       # - - - COLUMNS - - - -
     when @board_tiles.game_board_tiles[:tile1] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile4] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile7] == @current_player_token
       puts win_message
+      @game_status = @game_over
     when @board_tiles.game_board_tiles[:tile2] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile5] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile8] == @current_player_token
       puts win_message
+      @game_status = @game_over
     when @board_tiles.game_board_tiles[:tile3] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile6] == @current_player_token &&
       @board_tiles.game_board_tiles[:tile9] == @current_player_token
       puts win_message
+      @game_status = @game_over
 
     # - - - DIAGONAL - - - -
     when @board_tiles.game_board_tiles[:tile1] == @current_player_token &&
@@ -116,13 +122,16 @@ class GameModerator
 
   # if true, stalemate is false.
   def check_stalemate_condition
-    # (must be false until all @game_board_tiles hold player tokens)
-    puts "check_stalemate_condition || @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile): #{@board_tiles.game_board_tiles.any?(@board_tiles.empty_tile)}" # TODO: delete
+    puts "check_stalemate_condition || @board_tiles.game_board_tiles.any? &:empty? >> #{@board_tiles.game_board_tiles.any? &:empty?}"
 
-    puts "check_stalemate_condition || @game_board_tiles[:tile1] contains: #{@board_tiles.game_board_tiles[:tile1]}" # TODO: delete
-    puts "check_stalemate_condition || @game_board_tiles[:tile2] contains: #{@board_tiles.game_board_tiles[:tile2]}" # TODO: delete
+    @board_tiles.game_board_tiles.any? &:empty?
+    # # (must be false until all @game_board_tiles hold player tokens)
+    # puts "check_stalemate_condition || @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile): #{@board_tiles.game_board_tiles.any?(@board_tiles.empty_tile)}" # TODO: delete
 
-    @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile) ? false : true
+    # puts "check_stalemate_condition || @game_board_tiles[:tile1] contains: #{@board_tiles.game_board_tiles[:tile1]}" # TODO: delete
+    # puts "check_stalemate_condition || @game_board_tiles[:tile2] contains: #{@board_tiles.game_board_tiles[:tile2]}" # TODO: delete
+
+    # @board_tiles.game_board_tiles.any?(@board_tiles.empty_tile) ? false : true
   end
 
   def check_end_game_conditions

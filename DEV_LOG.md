@@ -1820,9 +1820,9 @@ Oh I can't believe I've been looking at this for 10 tracks and only now realize 
 
 At least the music is good.
 
-So earlier I decided not to use an `@empty_tile` variable when I started the classes from scratch, and now I'm putting it back in because the #any? method isn't picking up the string, and I want to see if using a variable fixes it. If not, I have slightly more idiomatic code.
+So earlier I decided not to use an `@empty_tile` variable when I started the classes from scratch, and now I'm putting it back in because the `#any?` method isn't picking up the string, and I want to see if using a variable fixes it. If not, I have slightly more idiomatic code.
 
-Ok, I played with check_stalemate_condition some more and wound up with this:
+Ok, I played with `check_stalemate_condition` some more and wound up with this:
 
 ```ruby
   def check_stalemate_condition
@@ -1851,6 +1851,95 @@ e.g. _do_thing_ if `@board_tiles`.`game_board_tiles`[`:tile1`] `==` `@board_tile
 I should be reading about this, but I'm just hacking away at it hoping to get lucky. Noobie move, Rin. Well, I'm out of time.
 
 Wish me luck at the tourney!
+
+## + + + + DAY 8 + + + +
+
+A very busy Thanksgiving weekend later (plus a catch-up day for errands and chores), and I'm back. It's the afternoon and I only just sat down. I'm busy this evening, so I'm back for at least one solid album of something, maybe one and a half.
+
+Reviewing my Day 7 notes, I'm having trouble identifying empty quotes in a set. So I need to find a way to identify them, then.
+
+I'm feeling off today. I'm going to listen to This Patch of Sky, album "Three Small Spaces".
+
+## Task: Work on play_turn termination condition: find way to recognize `empty_tile` in stalemate condition.
+
+I found this on StackOverflow:
+
+```ruby
+# Source - https://stackoverflow.com/a/15988996
+# Posted by Jon Gauthier, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-10-14, License - CC BY-SA 3.0
+
+variable = id if variable.nil? || variable.empty?
+```
+
+So maybe I can `#empty?` instead of `#any?` to detect an empty string. But after reading up on `#empty`, I realize I need to remove the space from the quotes in `BoardTiles`:
+
+```ruby
+# BoardTiles class
+ def initialize
+    @empty_tile = ''
+    @game_board_tiles = {
+      tile1: @empty_tile,
+    # ...
+    }
+  end
+```
+
+(...)
+
+(So I wound up not having the time I thought I did, but I came back this evening. Got the rest of the album still queued. I'm tired, my eyes are sand, but I want to get an album's worth in today. Let's do this.)
+
+Experiments with the above code modifications failed, but I found this:
+
+```ruby
+# Source - https://stackoverflow.com/a/3658242
+# Posted by Nakilon
+# Retrieved 2026-10-14, License - CC BY-SA 2.5
+
+def hash_has_blank hsh
+    hsh.values.any? &:empty?
+end
+```
+
+So the good news is that I got it working, the bad news is that it still takes one additional turn past the win condition to trigger the win message. That could be an issue if it's the last turn that wins.
+
+updated code:
+
+```ruby
+  def check_stalemate_condition
+    puts "check_stalemate_condition || @board_tiles.game_board_tiles.any? &:empty? >> #{@board_tiles.game_board_tiles.any? &:empty?}"
+
+    @board_tiles.game_board_tiles.any? &:empty?
+```
+
+output:
+
+```
+tile7
+check_win_conditions || else statement: false
+check_stalemate_condition || @board_tiles.game_board_tiles.any? &:empty? >> false
+tic_tac_toe.rb WHILE LOOP || game_moderator.game_status == game_moderator.in_progress is: true
+tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: in progress
+
+(...)
+
+tile8
+Player 1 wins!
+check_stalemate_condition || @board_tiles.game_board_tiles.any? &:empty? >> false
+tic_tac_toe.rb WHILE LOOP || game_moderator.game_status == game_moderator.in_progress is: false
+tic_tac_toe.rb WHILE LOOP || game_moderator.game_status contains: game over
+```
+
+And that's it, that's the album. That didn't really feel like a lot. But I was experimenting with my code a bit before I resolved it. I could have saved myself time by replacing what I had instead of writing over it, which caused bugs (e.g. forgetting to remove arguments when changing from `#any?` to `#empty?`).
+
+Day 9 will be better.
+
+Tomorrow's tasks:
+
+1. investigate delayed win condition trigger
+2. consider refactoring `GameModerator` which grew too large
+3. move `win_message` to `GameHost` since it's communicating to the user. I slept on that.
+4. Begin work on end game flow and/or helper methods.
 
 ## + + + + + Pain Points / Lessons Learned + + + + +
 

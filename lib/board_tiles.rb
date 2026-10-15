@@ -5,7 +5,7 @@ class BoardTiles
   attr_reader :game_board_tiles, :empty_tile
 
   def initialize
-    @empty_tile = ' '
+    @empty_tile = ''
     @game_board_tiles = {
       tile1: @empty_tile,
       tile2: @empty_tile,
